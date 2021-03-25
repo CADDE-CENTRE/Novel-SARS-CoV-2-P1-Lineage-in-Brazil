@@ -32,7 +32,7 @@ parameters
   real<lower=0> phi;
   real<lower=0,upper=1> cross;
   real<lower=0> tau;
-  real <lower=0> ifr1[M];
+  real <lower=0, upper=100> ifr1[M];
   real <lower=0> RR[M];
   matrix[W+1,M] weekly_effect;
   real<lower=0, upper=1> weekly_rho;
@@ -60,10 +60,6 @@ transformed parameters
   matrix[N2,M] immune_v2 = rep_matrix(0,N2,M);
   matrix[N2,M] alpha_sus1 = rep_matrix(0,N2,M);
   matrix[N2,M] alpha_sus2 = rep_matrix(0,N2,M);
-  //	matrix[N2,M] ar1 = rep_matrix(0,N2,M);
-  //	matrix[N2,M] ar2 = rep_matrix(0,N2,M);
-  //	matrix[N2,M] arboth = rep_matrix(0,N2,M);
-  //	matrix[N2,M] ar = rep_matrix(0,N2,M);
   matrix[N2,M] n1 = rep_matrix(0,N2,M);
   matrix[N2,M] n2 = rep_matrix(0,N2,M);
   matrix[N2,M] seroconv_v1 = rep_matrix(0, N2, M);
@@ -157,7 +153,7 @@ transformed parameters
 model 
 {
   ifr1 ~ normal(0.32,0.1);
-  cross ~ beta(1,1);
+  cross ~ beta(2,1);
   RR ~ lognormal(0,0.5);
   R_difference ~ normal(1,1);
   tau ~ exponential(0.03);
@@ -167,7 +163,7 @@ model
   for (m in 1:M)
   {
     y_v1[m] ~ exponential(1/tau);
-    y_v2[m] ~ normal(0,1);
+    y_v2[m] ~ normal(1,1);
     weekly_effect[3:(W+1), m] ~ normal( weekly_effect[2:W,m]* weekly_rho + weekly_effect[1:(W-1),m]* weekly_rho1,weekly_sd *sqrt(1-pow(weekly_rho,2)-pow(weekly_rho1,2) - 2 * pow(weekly_rho,2) * weekly_rho1/(1-weekly_rho1)));
     
   }
@@ -187,7 +183,7 @@ model
 generated quantities 
 {
   real RR_prior = lognormal_rng(0,0.5);
-  real cross_prior = beta_rng(1,1);
+  real cross_prior = beta_rng(2,1);
   real R_difference_prior = normal_rng(1,1);
   real ifr1_prior = normal_rng(0.32,0.1);
 }
