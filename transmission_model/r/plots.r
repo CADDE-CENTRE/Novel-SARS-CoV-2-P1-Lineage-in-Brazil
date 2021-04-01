@@ -237,11 +237,6 @@ plt_P1fraction <- function(outcheck)
     E_fraction_df = rbind(E_fraction_df_95,E_fraction_df_50)
     late_E_fraction_df = E_fraction_df[E_fraction_df$time >= ymd("2020-11-06"),]
     
-    # PHYLO_DATES = c(ymd("2020-12-20"),ymd("2021-01-18"))
-    # (stan_data$phylo_PSamples)/(stan_data$phylo_PSamples+stan_data$phylo_NSamples)
-    
-    # pcr_genome_fraction$date = dmy(pcr_genome_fraction$date)
-    
     ggplot() + 
         geom_point(data = datapoints, aes(x = date, y = prop)) +
         geom_errorbar(data = datapoints, aes(x = date, ymin=lower_CI, ymax=upper_CI,width=2))+
